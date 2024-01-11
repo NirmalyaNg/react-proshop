@@ -1,17 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import Product from '../components/Product';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../store/productSlice';
+import axios from 'axios';
+import { json, useLoaderData } from 'react-router-dom';
 
 const HomePage = () => {
-  const { products } = useSelector((state) => state.product);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
-
+  const products = useLoaderData();
   return (
     <>
       <h1>Latest Products</h1>
@@ -24,6 +18,23 @@ const HomePage = () => {
       </Row>
     </>
   );
+};
+
+export const loader = async () => {
+  try {
+    const { data } = await axios.get('/api/products');
+    return data.products;
+  } catch (error) {
+    throw json(
+      {
+        title: 'Failed to fetch Products',
+        description: 'There was an error fetching products',
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 };
 
 export default HomePage;
