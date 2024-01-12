@@ -22,6 +22,10 @@ router.post('/login', authUser);
 
 router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
 
-router.route('/:id').get(getUserById).put(updateUserById).delete(deleteUserById);
+router
+  .route('/:id')
+  .get(admin, getUsers, getUserById)
+  .put(admin, getUsers, updateUserById)
+  .delete(admin, getUsers, deleteUserById);
 
 export default router;

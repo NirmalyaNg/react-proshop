@@ -10,7 +10,7 @@ const handleValidationError = (error) => {
   Object.keys(error?.errors).forEach((key) => {
     errorMessages.push(error?.errors?.[key]?.message);
   });
-  return new AppError(errorMessages.join('.'), 400);
+  return new AppError(errorMessages.join(' '), 400);
 };
 
 const handleDuplicateKeyError = (error) => {
