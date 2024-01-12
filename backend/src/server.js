@@ -1,18 +1,33 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import connectDB from './db/db.js';
 import productRouter from './routers/productRouter.js';
+import userRouter from './routers/userRouter.js';
 import AppError from './utils/AppError.js';
 import globalErrorHandler from './controllers/errorController.js';
 
+// Configure dotenv
 dotenv.config();
+
+// Connect DB
 connectDB();
 
 const PORT = process.env.PORT || 5000;
 const app = express();
 
-app.use('/api/products', productRouter);
+// Register body parser middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// Register cookie parser middleware
+app.use(cookieParser());
+
+// Register routers
+app.use('/api/products', productRouter);
+app.use('/api/users', userRouter);
+
+// Handle error routes
 app.all('*', (req, res, next) => {
   const appError = new AppError(`Cannot find ${req.originalUrl} on the server.`, 404);
   next(appError);

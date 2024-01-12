@@ -4,7 +4,7 @@ import { FaTrash } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import Message from '../components/Message';
-import { addToCart } from '../store/slices/cartSlice';
+import { addToCart, removeFromCart } from '../store/slices/cartSlice';
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -20,13 +20,24 @@ const CartPage = () => {
     );
   };
 
+  const handleRemoveFromCart = (id) => {
+    dispatch(removeFromCart(id));
+  };
+
+  const handleProceedToCheckout = () => {
+    navigate('/login?redirect=/shipping');
+  };
+
   return (
     <Row>
       <Col md={8}>
         <h1 style={{ marginBottom: '20px' }}>Shopping Cart</h1>
         {cartItems.length === 0 ? (
           <Message>
-            Your cart is empty. <Link to='/'>Go Back</Link>
+            Your cart is empty.{' '}
+            <Link to='/'>
+              <strong>Go Back</strong>
+            </Link>
           </Message>
         ) : (
           <ListGroup variant='flush'>
@@ -52,7 +63,11 @@ const CartPage = () => {
                     </FormControl>
                   </Col>
                   <Col md={2}>
-                    <Button type='button' variant='light'>
+                    <Button
+                      type='button'
+                      variant='light'
+                      onClick={() => handleRemoveFromCart(cartItem._id)}
+                    >
                       <FaTrash />
                     </Button>
                   </Col>
@@ -74,6 +89,7 @@ const CartPage = () => {
                 type='button'
                 className='btn-dark btn-block'
                 disabled={cartItems.length === 0}
+                onClick={handleProceedToCheckout}
               >
                 Proceed to Checkout
               </Button>
