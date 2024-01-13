@@ -6,6 +6,7 @@ import ProductDetailPage, { loader as productDetailLoader } from './pages/Produc
 import ErrorPage from './pages/Error';
 import CartPage from './pages/Cart';
 import LoginPage from './pages/Login';
+import RegisterPage from './pages/Register';
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
       { path: 'product/:id', element: <ProductDetailPage />, loader: productDetailLoader },
       { path: 'cart', element: <CartPage /> },
       { path: 'login', element: <LoginPage /> },
+      { path: 'register', element: <RegisterPage /> },
     ],
   },
 ]);

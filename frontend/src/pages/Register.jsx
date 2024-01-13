@@ -8,9 +8,22 @@ import { setCredentials } from '../store/slices/authSlice';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
-import { validateEmail, validatePassword } from '../utils/validators';
+import {
+  validateConfirmPassword,
+  validateEmail,
+  validateName,
+  validatePassword,
+} from '../utils/validators';
 
-const LoginPage = () => {
+const RegisterPage = () => {
+  const {
+    value: name,
+    error: nameError,
+    handleBlur: handleNameBlur,
+    handleChange: handleNameChange,
+    inValid: nameIsInvalid,
+  } = useInput('', validateName);
+
   const {
     value: email,
     error: emailError,
@@ -26,7 +39,16 @@ const LoginPage = () => {
     handleChange: handlePasswordChange,
     inValid: passwordIsInvalid,
   } = useInput('', validatePassword);
-  const formIsInvalid = emailError || passwordError;
+
+  const {
+    value: confirmPassword,
+    error: confirmPasswordError,
+    handleBlur: handleConfirmPasswordBlur,
+    handleChange: handleConfirmPasswordChange,
+    inValid: confirmPasswordIsInvalid,
+  } = useInput('', (value) => validateConfirmPassword(value, password));
+
+  const formIsInvalid = emailError || passwordError || nameError || confirmPasswordError;
 
   const { search } = useLocation();
   const navigate = useNavigate();
@@ -49,12 +71,13 @@ const LoginPage = () => {
     if (formIsInvalid) return;
     try {
       setSumbitting(true);
-      const { data } = await axios.post('/api/users/login', {
+      const { data } = await axios.post('/api/users', {
+        name,
         email,
         password,
       });
 
-      dispatch(setCredentials({ ...data }));
+      dispatch(setCredentials({ ...data.user }));
     } catch (error) {
       toast(error?.response?.data?.message || error.message, {
         position: 'top-center',
@@ -70,9 +93,20 @@ const LoginPage = () => {
     <FormContainer>
       <Card className='p-3 shadow-sm border-0'>
         <Card.Body>
-          <h1 className='text-center'>Sign In</h1>
+          <h1 className='text-center'>Register</h1>
           {submitting && <Loader />}
           <Form onSubmit={submitHandler}>
+            <Form.Group controlId='name' className='my-2'>
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter name'
+                value={name}
+                onChange={handleNameChange}
+                onBlur={handleNameBlur}
+              />
+              {nameIsInvalid && <p className='mt-1 text-danger'>{nameError}</p>}
+            </Form.Group>
             <Form.Group controlId='email' className='my-2'>
               <Form.Label>Email Address</Form.Label>
               <Form.Control
@@ -95,21 +129,34 @@ const LoginPage = () => {
               />
               {passwordIsInvalid && <p className='mt-1 text-danger'>{passwordError}</p>}
             </Form.Group>
+            <Form.Group controlId='confirmPassword' className='my-2'>
+              <Form.Label>Confirm Password</Form.Label>
+              <Form.Control
+                type='password'
+                placeholder='Confirm password'
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                onBlur={handleConfirmPasswordBlur}
+              />
+              {confirmPasswordIsInvalid && (
+                <p className='mt-1 text-danger'>{confirmPasswordError}</p>
+              )}
+            </Form.Group>
             <Button type='submit' variant='dark' disabled={formIsInvalid || submitting}>
-              Sign In
+              Register
             </Button>
           </Form>
           <Row className='mt-2'>
             <Col>
-              New Customer ?{' '}
+              Already registered ?
               <Link
                 to={
                   redirect && redirect !== '/'
-                    ? { pathname: '/register', search: `?redirect=${redirect}` }
-                    : '/register'
+                    ? { pathname: '/login', search: `/login?redirect=${redirect}` }
+                    : '/login'
                 }
               >
-                <strong>Register</strong>
+                <strong> Login</strong>
               </Link>
             </Col>
           </Row>
@@ -119,4 +166,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

@@ -46,7 +46,12 @@ const registerUser = catchAsync(async (req, res, next) => {
     setJWTCookie(token, res);
     return res.status(201).send({
       status: 'success',
-      user,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
     });
   } else {
     return next(new AppError('Invalid user details', 400));
