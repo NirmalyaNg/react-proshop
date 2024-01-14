@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import connectDB from './db/db.js';
 import productRouter from './routers/productRouter.js';
 import userRouter from './routers/userRouter.js';
+import orderRouter from './routers/orderRouter.js';
 import AppError from './utils/AppError.js';
 import globalErrorHandler from './controllers/errorController.js';
 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 // Register routers
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 
 // Handle error routes
 app.all('*', (req, res, next) => {
