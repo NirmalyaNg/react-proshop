@@ -21,6 +21,11 @@ function Header() {
       dispatch(logout());
       navigate('/login');
     } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(logout());
+        navigate('/login');
+        return;
+      }
       toast(error?.response?.data?.message || error.message);
     }
   };

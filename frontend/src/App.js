@@ -10,6 +10,8 @@ import RegisterPage from './pages/Register';
 import ShippingPage from './pages/Shipping';
 import PrivateRoute from './components/PrivateRoute';
 import PaymentPage from './pages/Payment';
+import PlaceOrderPage from './pages/PlaceOrder';
+import OrderPage from './pages/Order';
 
 const router = createBrowserRouter([
   {
@@ -28,6 +30,8 @@ const router = createBrowserRouter([
         children: [
           { path: 'shipping', element: <ShippingPage /> },
           { path: 'payment', element: <PaymentPage /> },
+          { path: 'place-order', element: <PlaceOrderPage /> },
+          { path: 'order/:id', element: <OrderPage /> },
         ],
       },
     ],
