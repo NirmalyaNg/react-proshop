@@ -1,4 +1,4 @@
-import { isEmail } from 'validator';
+import { isEmail, isPostalCode } from 'validator';
 
 const isEmpty = (value) => value.trim().length === 0;
 const hasMinLength = (value, minLength) => value.trim().length >= minLength;
@@ -44,4 +44,49 @@ const validateConfirmPassword = (value, passwordValue) => {
   return error;
 };
 
-export { validateName, validateEmail, validatePassword, validateConfirmPassword };
+const validateAddress = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Address cannot be empty';
+  } else if (!hasMinLength(value, 6)) {
+    error = 'Address should have atleast 6 characters';
+  }
+  return error;
+};
+
+const validateCity = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'City cannot be empty';
+  }
+  return error;
+};
+
+const validatePostalCode = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Postal Code cannot be empty';
+  } else if (!isPostalCode(value, 'any')) {
+    error = 'Postal Code is invalid';
+  }
+  return error;
+};
+
+const validateCountry = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Country cannot be empty';
+  }
+  return error;
+};
+
+export {
+  validateName,
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword,
+  validatePostalCode,
+  validateCountry,
+  validateCity,
+  validateAddress,
+};

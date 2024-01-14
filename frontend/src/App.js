@@ -7,6 +7,9 @@ import ErrorPage from './pages/Error';
 import CartPage from './pages/Cart';
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
+import ShippingPage from './pages/Shipping';
+import PrivateRoute from './components/PrivateRoute';
+import PaymentPage from './pages/Payment';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +22,14 @@ const router = createBrowserRouter([
       { path: 'cart', element: <CartPage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'register', element: <RegisterPage /> },
+      {
+        path: '',
+        element: <PrivateRoute />,
+        children: [
+          { path: 'shipping', element: <ShippingPage /> },
+          { path: 'payment', element: <PaymentPage /> },
+        ],
+      },
     ],
   },
 ]);
