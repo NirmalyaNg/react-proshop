@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import axios from 'axios';
-import { Card, Col, Image, ListGroup, Row } from 'react-bootstrap';
+import { Card, Col, ListGroup, Row } from 'react-bootstrap';
+import OrderItem from '../components/OrderItem';
+import PriceSummary from '../components/PriceSummary';
+import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import { toast } from 'react-toastify';
 
 const OrderPage = () => {
   const [order, setOrder] = useState(null);
   const { id: orderId } = useParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [{ isPending }, payPalDispatch] = usePayPalScriptReducer();
 
   useEffect(() => {
     const fetchOrderById = async () => {
@@ -25,6 +30,73 @@ const OrderPage = () => {
     });
   }, [orderId]);
 
+  useEffect(() => {
+    const fetchPayPalClientId = async () => {
+      const { data } = await axios.get('/api/config/paypal');
+      return data.clientId;
+    };
+
+    fetchPayPalClientId()
+      .then((clientId) => {
+        const loadPayPalScript = async () => {
+          payPalDispatch({
+            type: 'resetOptions',
+            value: {
+              'client-id': clientId,
+              currency: 'USD',
+            },
+          });
+
+          payPalDispatch({
+            type: 'setLoadingStatus',
+            value: 'pending',
+          });
+        };
+
+        if (order && !order.isPaid) {
+          if (!window.paypal) {
+            loadPayPalScript();
+          }
+        }
+      })
+      .catch((error) => {
+        setError(error?.response?.data?.message || error.message);
+      });
+  }, [order, payPalDispatch]);
+
+  const createOrder = (data, actions) => {
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: {
+              value: order.totalPrice,
+            },
+          },
+        ],
+      })
+      .then((orderId) => {
+        return orderId;
+      });
+  };
+
+  const onApprove = (data, actions) => {
+    return actions.order.capture().then(async (details) => {
+      try {
+        const { data } = await axios.put(`/api/orders/${order._id}/pay`, {
+          ...details,
+        });
+        toast.success('Payment Successfull');
+        setOrder(data.order);
+      } catch (error) {
+        toast.error(error?.response?.data?.message || error.message);
+      }
+    });
+  };
+
+  const onError = (error) => {
+    toast.error(error.message);
+  };
   return (
     <>
       {loading && <Loader />}
@@ -68,19 +140,7 @@ const OrderPage = () => {
                 <ListGroup.Item>
                   <h4 className='mb-2'>Order Items</h4>
                   {order.orderItems.map((item, index) => (
-                    <ListGroup.Item key={index}>
-                      <Row className='align-items-center'>
-                        <Col md={2}>
-                          <Image src={item.image} alt={item.name} fluid rounded />
-                        </Col>
-                        <Col>
-                          <Link to={`/product/${item.product}`}>{item.name}</Link>
-                        </Col>
-                        <Col md={4}>
-                          {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
+                    <OrderItem key={index} item={item} />
                   ))}
                 </ListGroup.Item>
               </ListGroup>
@@ -88,37 +148,28 @@ const OrderPage = () => {
             <Col md={5}>
               <Card className='border-0 shadow-sm p-3'>
                 <Card.Body>
-                  <ListGroup variant='flush'>
+                  <PriceSummary
+                    text='Order Summary'
+                    totalPrice={order.totalPrice}
+                    itemsPrice={order.itemsPrice}
+                    taxPrice={order.taxPrice}
+                    shippingPrice={order.shippingPrice}
+                  />
+                  {!order.isPaid && (
                     <ListGroup.Item>
-                      <h2>Order Summary</h2>
+                      {isPending ? (
+                        <Loader />
+                      ) : (
+                        <div>
+                          <PayPalButtons
+                            createOrder={createOrder}
+                            onApprove={onApprove}
+                            onError={onError}
+                          />
+                        </div>
+                      )}
                     </ListGroup.Item>
-                    <ListGroup.Item>
-                      <Row>
-                        <Col>Items :</Col>
-                        <Col>${order.itemsPrice}</Col>
-                      </Row>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <Row>
-                        <Col>Shipping :</Col>
-                        <Col>${order.shippingPrice}</Col>
-                      </Row>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <Row>
-                        <Col>Tax :</Col>
-                        <Col>${order.taxPrice}</Col>
-                      </Row>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <Row>
-                        <Col>Total :</Col>
-                        <Col>
-                          <strong>${order.totalPrice}</strong>
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
-                  </ListGroup>
+                  )}
                 </Card.Body>
               </Card>
             </Col>

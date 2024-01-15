@@ -29,6 +29,12 @@ app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 
+app.get('/api/config/paypal', (req, res) =>
+  res.send({
+    clientId: process.env.PAYPAL_CLIENT_ID,
+  })
+);
+
 // Handle error routes
 app.all('*', (req, res, next) => {
   const appError = new AppError(`Cannot find ${req.originalUrl} on the server.`, 404);

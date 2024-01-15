@@ -8,6 +8,7 @@ import Loader from '../components/Loader';
 import axios from 'axios';
 import { clearCartItems } from '../store/slices/cartSlice';
 import { toast } from 'react-toastify';
+import PriceSummary from '../components/PriceSummary';
 
 const PlaceOrderPage = () => {
   const navigate = useNavigate();
@@ -100,36 +101,13 @@ const PlaceOrderPage = () => {
           <Col md={4}>
             <Card className='border-0 shadow-sm p-3'>
               <Card.Body>
-                <ListGroup variant='flush'>
-                  <ListGroup.Item>
-                    <h2>Order Summary</h2>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Items :</Col>
-                      <Col>${cart.itemsPrice}</Col>
-                    </Row>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Shipping :</Col>
-                      <Col>${cart.shippingPrice}</Col>
-                    </Row>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Tax :</Col>
-                      <Col>${cart.taxPrice}</Col>
-                    </Row>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Total :</Col>
-                      <Col>
-                        <strong>${cart.totalPrice}</strong>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
+                <PriceSummary
+                  text='Order Summary'
+                  totalPrice={cart.totalPrice}
+                  taxPrice={cart.taxPrice}
+                  shippingPrice={cart.shippingPrice}
+                  itemsPrice={cart.itemsPrice}
+                >
                   {error && (
                     <ListGroup.Item>
                       <Message variant='danger'>{error}</Message>
@@ -147,7 +125,7 @@ const PlaceOrderPage = () => {
                     </Button>
                     {loading && <Loader />}
                   </ListGroup.Item>
-                </ListGroup>
+                </PriceSummary>
               </Card.Body>
             </Card>
           </Col>
