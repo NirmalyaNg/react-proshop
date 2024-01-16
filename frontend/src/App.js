@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import HomePage, { loader as productsLoader } from './pages/Home';
 import RootLayoutPage from './pages/RootLayout';
 import ProductDetailPage, { loader as productDetailLoader } from './pages/ProductDetail';
@@ -12,6 +12,9 @@ import PrivateRoute from './components/PrivateRoute';
 import PaymentPage from './pages/Payment';
 import PlaceOrderPage from './pages/PlaceOrder';
 import OrderPage from './pages/Order';
+import ProfilePage from './pages/Profile';
+import OrderListPage, { loader as ordersLoader } from './pages/admin/OrderList';
+import AdminRoute, { loader as checkAdminLoader } from './components/AdminRoute';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +35,16 @@ const router = createBrowserRouter([
           { path: 'payment', element: <PaymentPage /> },
           { path: 'place-order', element: <PlaceOrderPage /> },
           { path: 'order/:id', element: <OrderPage /> },
+          { path: 'profile', element: <ProfilePage /> },
+        ],
+      },
+      {
+        path: 'admin',
+        element: <AdminRoute />,
+        loader: checkAdminLoader,
+        children: [
+          { index: true, element: <Navigate to='order-list' /> },
+          { path: 'order-list', element: <OrderListPage />, loader: ordersLoader },
         ],
       },
     ],
