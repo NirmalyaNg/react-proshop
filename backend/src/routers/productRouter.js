@@ -1,9 +1,14 @@
 import express from 'express';
-import { fetchAllProducts, fetchProduct } from '../controllers/productController.js';
+import {
+  createProduct,
+  fetchAllProducts,
+  fetchProduct,
+} from '../controllers/productController.js';
+import { protect, admin } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', fetchAllProducts);
+router.route('/').get(fetchAllProducts).post(protect, admin, createProduct);
 
 router.get('/:id', fetchProduct);
 

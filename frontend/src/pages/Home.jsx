@@ -1,8 +1,8 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import Product from '../components/Product';
-import axios from 'axios';
 import { json, useLoaderData } from 'react-router-dom';
+import { fetchProducts } from '../api/api';
 
 const HomePage = () => {
   const products = useLoaderData();
@@ -22,8 +22,8 @@ const HomePage = () => {
 
 export const loader = async () => {
   try {
-    const { data } = await axios.get('/api/products');
-    return data.products;
+    const products = await fetchProducts();
+    return products;
   } catch (error) {
     throw json(
       {

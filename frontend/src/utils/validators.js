@@ -3,8 +3,9 @@ import { isEmail, isPostalCode } from 'validator';
 const isEmpty = (value) => value.trim().length === 0;
 const hasMinLength = (value, minLength) => value.trim().length >= minLength;
 const isValidEmail = (value) => isEmail(value);
+const hasMinValue = (value, minValue) => +value > minValue;
 
-const validateName = (value) => {
+export const validateName = (value) => {
   let error = null;
   if (isEmpty(value)) {
     error = 'Name is required';
@@ -14,7 +15,7 @@ const validateName = (value) => {
   return error;
 };
 
-const validateEmail = (value) => {
+export const validateEmail = (value) => {
   let error = null;
   if (isEmpty(value)) {
     error = 'Email is required';
@@ -24,7 +25,7 @@ const validateEmail = (value) => {
   return error;
 };
 
-const validatePassword = (value) => {
+export const validatePassword = (value) => {
   let error = null;
   if (isEmpty(value)) {
     error = 'Password is required';
@@ -34,7 +35,7 @@ const validatePassword = (value) => {
   return error;
 };
 
-const validateConfirmPassword = (value, passwordValue) => {
+export const validateConfirmPassword = (value, passwordValue) => {
   let error = null;
   if (isEmpty(value)) {
     error = 'Confirm Password is required';
@@ -44,7 +45,7 @@ const validateConfirmPassword = (value, passwordValue) => {
   return error;
 };
 
-const validateAddress = (value) => {
+export const validateAddress = (value) => {
   let error = null;
   if (isEmpty(value)) {
     error = 'Address cannot be empty';
@@ -54,7 +55,7 @@ const validateAddress = (value) => {
   return error;
 };
 
-const validateCity = (value) => {
+export const validateCity = (value) => {
   let error = null;
   if (isEmpty(value)) {
     error = 'City cannot be empty';
@@ -62,7 +63,7 @@ const validateCity = (value) => {
   return error;
 };
 
-const validatePostalCode = (value) => {
+export const validatePostalCode = (value) => {
   let error = null;
   if (isEmpty(value)) {
     error = 'Postal Code cannot be empty';
@@ -72,7 +73,7 @@ const validatePostalCode = (value) => {
   return error;
 };
 
-const validateCountry = (value) => {
+export const validateCountry = (value) => {
   let error = null;
   if (isEmpty(value)) {
     error = 'Country cannot be empty';
@@ -80,13 +81,62 @@ const validateCountry = (value) => {
   return error;
 };
 
-export {
-  validateName,
-  validateEmail,
-  validatePassword,
-  validateConfirmPassword,
-  validatePostalCode,
-  validateCountry,
-  validateCity,
-  validateAddress,
+export const validateProductName = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Product name cannot be empty';
+  } else if (!hasMinLength(value, 6)) {
+    error = 'Product name should have atleast 6 characters';
+  }
+  return error;
+};
+
+export const validateProductDescription = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Product description cannot be empty';
+  } else if (!hasMinLength(value, 6)) {
+    error = 'Product description should have atleast 6 characters';
+  }
+  return error;
+};
+
+export const validateProductBrand = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Product brand cannot be empty';
+  } else if (!hasMinLength(value, 6)) {
+    error = 'Product brand should have atleast 6 characters';
+  }
+  return error;
+};
+
+export const validateProductCategory = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Product category cannot be empty';
+  } else if (!hasMinLength(value, 6)) {
+    error = 'Product category should have atleast 6 characters';
+  }
+  return error;
+};
+
+export const validateProductCountInStock = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Product countInStock cannot be empty';
+  } else if (!hasMinValue(value, 0)) {
+    error = 'Product counInStock should be greater than 0';
+  }
+  return error;
+};
+
+export const validateProductPrice = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Product price cannot be empty';
+  } else if (!hasMinValue(value, 0)) {
+    error = 'Product price should be greater than 0';
+  }
+  return error;
 };

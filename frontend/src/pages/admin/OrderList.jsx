@@ -9,8 +9,10 @@ import { toast } from 'react-toastify';
 const OrderListPage = () => {
   const ordersData = useLoaderData();
   const [orders, setOrders] = useState(ordersData);
+  const [loading, setLoading] = useState(false);
 
   const handleMarkAsDelivered = async (id) => {
+    setLoading(true);
     try {
       const { data } = await axios.put(`/api/orders/${id}/deliver`);
       const { order: updatedOrder } = data;
@@ -24,6 +26,7 @@ const OrderListPage = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
     }
+    setLoading(false);
   };
 
   return (
@@ -68,12 +71,13 @@ const OrderListPage = () => {
                     Details
                   </Button>
                 </LinkContainer>
-                {!order.isDelivered && (
+                {!order.isDelivered && order.isPaid && (
                   <Button
                     variant='warning'
                     className='btn-sm ms-2'
                     type='button'
                     onClick={() => handleMarkAsDelivered(order._id)}
+                    disabled={loading}
                   >
                     Mark Delivered
                   </Button>
