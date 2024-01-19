@@ -71,6 +71,7 @@ const ProductForm = ({ onSubmit, product, loading, error }) => {
         .then((imageUrl) => {
           console.log(imageUrl);
           setImage(imageUrl);
+          toast.success('Image uploaded successfully');
           setUploading(false);
         })
         .catch((error) => {
