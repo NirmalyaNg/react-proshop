@@ -2,6 +2,7 @@ import catchAsync from '../utils/catchAsync.js';
 import User from '../models/user.js';
 import AppError from '../utils/AppError.js';
 import { setJWTCookie } from '../utils/setCookie.js';
+import Order from '../models/order.js';
 
 // @desc Authenticate user and generate token
 // @route POST /api/users/login
@@ -61,7 +62,7 @@ const registerUser = catchAsync(async (req, res, next) => {
 // @desc Logout user and clear cookie
 // @route POST /api/users/logout
 // @access private
-const logoutUser = catchAsync(async (req, res) => {
+const logoutUser = catchAsync(async (req, res, next) => {
   res.cookie('jwt', '', {
     httpOnly: true,
     expires: new Date(0),
@@ -96,7 +97,7 @@ const getUserProfile = catchAsync(async (req, res, next) => {
 // @desc Update user profile
 // @route PUT /api/users/profile
 // @access private
-const updateUserProfile = catchAsync(async (req, res) => {
+const updateUserProfile = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user._id);
   if (user) {
     user.name = req.body.name || user.name;
@@ -123,30 +124,80 @@ const updateUserProfile = catchAsync(async (req, res) => {
 // @desc Get users
 // @route GET /api/users
 // @access private(admin)
-const getUsers = catchAsync(async (req, res) => {
-  res.send('Get Users');
+const getUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find({
+    _id: {
+      $ne: req.user._id,
+    },
+  }).select('-password');
+  res.status(200).json({
+    status: 'success',
+    users: users.filter((user) => user._id !== req.user._id),
+  });
 });
 
 // @desc Get user by id
 // @route GET /api/users/:id
 // @access private(admin)
-const getUserById = catchAsync(async (req, res) => {
-  res.send('Get User By Id');
+const getUserById = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    res.status(200).send({
+      status: 'success',
+      user,
+    });
+  } else {
+    return next(new AppError('User not found', 404));
+  }
 });
 
 // @desc Delete user by id
 // @route DELETE /api/users/:id
 // @access private(admin)
-const deleteUserById = catchAsync(async (req, res) => {
-  res.send('Delete User By Id');
+const deleteUserById = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    if (user.isAdmin) {
+      return next(new AppError('Cannot delete admin user', 400));
+    }
+    await User.deleteOne({ _id: user._id });
+
+    // Delete user orders
+    await Order.deleteMany({ user: user._id });
+
+    res.status(200).send({
+      status: 'success',
+      message: 'User deleted successfully',
+    });
+  } else {
+    return next(new AppError('User not found', 404));
+  }
 });
 
 // @desc Update User By Id
 // @route PUT /api/users/:id
 // @access private(admin)
 
-const updateUserById = catchAsync(async (req, res) => {
-  res.send('Update User By Id');
+const updateUserById = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  const requiredUpdates = ['name', 'email', 'isAdmin'];
+  const providedUpdates = Object.keys(req.body);
+  const isPresent = requiredUpdates.every((update) => providedUpdates.includes(update));
+  if (user) {
+    if (!isPresent) {
+      return next(new AppError('Invalid Updates', 404));
+    }
+    user.name = req.body.name;
+    user.email = req.body.email;
+    user.isAdmin = req.body.isAdmin;
+    const updatedUser = await user.save();
+    res.status(200).send({
+      status: 'success',
+      user,
+    });
+  } else {
+    return next(new AppError('User not found', 404));
+  }
 });
 
 export {

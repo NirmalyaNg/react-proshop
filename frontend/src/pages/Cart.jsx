@@ -77,26 +77,28 @@ const CartPage = () => {
           </ListGroup>
         )}
       </Col>
-      <Col md={4}>
-        <Card className='p-3 shadow-sm border-0'>
-          <ListGroup variant='flush'>
-            <ListGroup.Item>
-              <h2>Subtotal: ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items</h2>$
-              {cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Button
-                type='button'
-                className='btn-dark btn-block'
-                disabled={cartItems.length === 0}
-                onClick={handleProceedToCheckout}
-              >
-                Proceed to Checkout
-              </Button>
-            </ListGroup.Item>
-          </ListGroup>
-        </Card>
-      </Col>
+      {cartItems.length > 0 && (
+        <Col md={4}>
+          <Card className='p-3 shadow-sm border-0'>
+            <ListGroup variant='flush'>
+              <ListGroup.Item>
+                <h2>Subtotal: ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items</h2>
+                ${cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Button
+                  type='button'
+                  className='btn-dark btn-block'
+                  disabled={cartItems.length === 0}
+                  onClick={handleProceedToCheckout}
+                >
+                  Proceed to Checkout
+                </Button>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      )}
     </Row>
   );
 };

@@ -18,6 +18,8 @@ import AdminRoute, { loader as checkAdminLoader } from './components/AdminRoute'
 import ProductListPage from './pages/admin/ProductList';
 import CreateProductPage from './pages/admin/CreateProduct';
 import ProductEditPage from './pages/admin/ProductEdit';
+import UserListPage, { loader as usersLoader } from './pages/admin/UserList';
+import UserEditPage, { loader as userLoader } from './pages/admin/UserEdit';
 
 const router = createBrowserRouter([
   {
@@ -54,6 +56,16 @@ const router = createBrowserRouter([
             path: 'edit-product/:id',
             element: <ProductEditPage />,
             loader: productDetailLoader,
+          },
+          {
+            path: 'user-list',
+            element: <UserListPage />,
+            loader: usersLoader,
+          },
+          {
+            path: 'edit-user/:id',
+            element: <UserEditPage />,
+            loader: userLoader,
           },
         ],
       },
