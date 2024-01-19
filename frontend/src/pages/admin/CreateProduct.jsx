@@ -9,7 +9,7 @@ const CreateProductPage = () => {
   const [error, setError] = useState(null);
 
   const handleAddProduct = async (productData) => {
-    const { name, description, brand, price, category, countInStock } = productData;
+    const { name, description, brand, price, category, countInStock, image } = productData;
     try {
       await axios.post('/api/products', {
         name,
@@ -18,6 +18,7 @@ const CreateProductPage = () => {
         price,
         category,
         countInStock,
+        image,
       });
       navigate('/admin/product-list');
     } catch (error) {
