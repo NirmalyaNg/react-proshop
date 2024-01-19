@@ -1,6 +1,6 @@
 import { isEmail, isPostalCode } from 'validator';
 
-const isEmpty = (value) => value.trim().length === 0;
+const isEmpty = (value) => `${value}`.trim().length === 0;
 const hasMinLength = (value, minLength) => value.trim().length >= minLength;
 const isValidEmail = (value) => isEmail(value);
 const hasMinValue = (value, minValue) => +value > minValue;
@@ -105,8 +105,6 @@ export const validateProductBrand = (value) => {
   let error = null;
   if (isEmpty(value)) {
     error = 'Product brand cannot be empty';
-  } else if (!hasMinLength(value, 6)) {
-    error = 'Product brand should have atleast 6 characters';
   }
   return error;
 };

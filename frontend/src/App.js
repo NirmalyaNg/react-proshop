@@ -17,6 +17,7 @@ import OrderListPage, { loader as ordersLoader } from './pages/admin/OrderList';
 import AdminRoute, { loader as checkAdminLoader } from './components/AdminRoute';
 import ProductListPage from './pages/admin/ProductList';
 import CreateProductPage from './pages/admin/CreateProduct';
+import ProductEditPage from './pages/admin/ProductEdit';
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,11 @@ const router = createBrowserRouter([
           { path: 'order-list', element: <OrderListPage />, loader: ordersLoader },
           { path: 'product-list', element: <ProductListPage />, loader: productsLoader },
           { path: 'new-product', element: <CreateProductPage /> },
+          {
+            path: 'edit-product/:id',
+            element: <ProductEditPage />,
+            loader: productDetailLoader,
+          },
         ],
       },
     ],

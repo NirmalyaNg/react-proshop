@@ -130,7 +130,7 @@ const ProfilePage = () => {
                     )}
                   </td>
                   <td>
-                    {order.delivered ? (
+                    {order.isDelivered ? (
                       new Date(order.deliveredAt).toDateString()
                     ) : (
                       <FaTimes style={{ color: 'red' }} />

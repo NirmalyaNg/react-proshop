@@ -3,13 +3,27 @@ import { useLoaderData } from 'react-router-dom';
 import { Button, Col, Image, Row, Table } from 'react-bootstrap';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import Loader from '../../components/Loader';
 
 const ProductListPage = () => {
   const productsData = useLoaderData();
+  const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState(productsData);
 
-  const deleteHandler = (id) => {
-    console.log(id);
+  const deleteHandler = async (id) => {
+    if (window.confirm('Are you sure you want to delete ?')) {
+      setLoading(true);
+      try {
+        await axios.delete(`/api/products/${id}`);
+        setProducts((prevProducts) => prevProducts.filter((product) => product._id !== id));
+        toast.success('Product Deleted Successfully');
+      } catch (error) {
+        toast.error(error?.response?.data?.message || error.message);
+      }
+      setLoading(false);
+    }
   };
 
   return (
@@ -26,6 +40,7 @@ const ProductListPage = () => {
           </LinkContainer>
         </Col>
       </Row>
+      {loading && <Loader />}
       <Table striped hover responsive className='table-sm'>
         <thead>
           <tr>
@@ -46,7 +61,7 @@ const ProductListPage = () => {
               <td>
                 <Image
                   src={product.image}
-                  style={{ width: '60px', height: '60px' }}
+                  style={{ width: '80px', height: '60px' }}
                   rounded
                   fluid
                   alr={product.name}
@@ -56,7 +71,7 @@ const ProductListPage = () => {
               <td>{product.category}</td>
               <td>{product.brand}</td>
               <td>
-                <LinkContainer to={`/admin/product/${product._id}`}>
+                <LinkContainer to={`/admin/edit-product/${product._id}`}>
                   <Button className='btn btn-sm' variant='light'>
                     <FaEdit />
                   </Button>
