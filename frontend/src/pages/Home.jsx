@@ -1,11 +1,13 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import Product from '../components/Product';
-import { json, useLoaderData } from 'react-router-dom';
+import { json, useLoaderData, useParams } from 'react-router-dom';
 import { fetchProducts } from '../api/api';
+import Paginate from '../components/Paginate';
 
 const HomePage = () => {
-  const products = useLoaderData();
+  const { products, pages } = useLoaderData();
+  const { pageNumber } = useParams();
   return (
     <>
       <h1>Latest Products</h1>
@@ -16,15 +18,18 @@ const HomePage = () => {
           </Col>
         ))}
       </Row>
+      <Paginate page={pageNumber || 1} pages={pages} />
     </>
   );
 };
 
-export const loader = async () => {
+export const loader = async ({ params }) => {
   try {
-    const products = await fetchProducts();
-    return products;
+    const { pageNumber } = params;
+    const data = await fetchProducts(pageNumber);
+    return data;
   } catch (error) {
+    console.log(error);
     throw json(
       {
         title: 'Failed to fetch Products',

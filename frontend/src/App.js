@@ -28,6 +28,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage />, loader: productsLoader },
+      { path: 'page/:pageNumber', element: <HomePage />, loader: productsLoader },
       { path: 'product/:id', element: <ProductDetailPage />, loader: productDetailLoader },
       { path: 'cart', element: <CartPage /> },
       { path: 'login', element: <LoginPage /> },
@@ -51,6 +52,11 @@ const router = createBrowserRouter([
           { index: true, element: <Navigate to='order-list' /> },
           { path: 'order-list', element: <OrderListPage />, loader: ordersLoader },
           { path: 'product-list', element: <ProductListPage />, loader: productsLoader },
+          {
+            path: 'product-list/page/:pageNumber',
+            element: <ProductListPage />,
+            loader: productsLoader,
+          },
           { path: 'new-product', element: <CreateProductPage /> },
           {
             path: 'edit-product/:id',

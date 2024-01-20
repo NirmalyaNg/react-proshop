@@ -6,10 +6,17 @@ import AppError from '../utils/AppError.js';
 // Route GET /api/products
 // Access public
 export const fetchAllProducts = catchAsync(async (req, res, next) => {
-  const products = await Product.find({});
+  const pageNumber = req.query.pageNumber || 1;
+  const pageSize = process.env.PAGE_SIZE || 4;
+  const count = await Product.countDocuments({});
+  const products = await Product.find({})
+    .limit(pageSize)
+    .skip(pageSize * (pageNumber - 1));
+
   res.status(200).json({
     status: 'success',
-    count: products.length,
+    page: pageNumber,
+    pages: Math.ceil(count / pageSize),
     products,
   });
 });

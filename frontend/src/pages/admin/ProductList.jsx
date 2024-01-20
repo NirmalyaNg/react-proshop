@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useParams } from 'react-router-dom';
 import { Button, Col, Image, Row, Table } from 'react-bootstrap';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader';
+import Paginate from '../../components/Paginate';
 
 const ProductListPage = () => {
   const productsData = useLoaderData();
   const [loading, setLoading] = useState(false);
-  const [products, setProducts] = useState(productsData);
+  const [products, setProducts] = useState(productsData.products);
+  const { pageNumber } = useParams();
 
   const deleteHandler = async (id) => {
     if (window.confirm('Are you sure you want to delete ?')) {
@@ -41,7 +43,7 @@ const ProductListPage = () => {
         </Col>
       </Row>
       {loading && <Loader />}
-      <Table striped hover responsive className='table-sm'>
+      <Table striped hover responsive className='table-sm mb-3'>
         <thead>
           <tr>
             <th>ID</th>
@@ -88,6 +90,7 @@ const ProductListPage = () => {
           ))}
         </tbody>
       </Table>
+      <Paginate page={pageNumber || 1} pages={productsData.pages} isAdmin={true} />
     </>
   );
 };

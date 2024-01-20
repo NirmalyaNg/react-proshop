@@ -1,10 +1,13 @@
 import axios from 'axios';
 import { storage } from '../firebase';
 
-export const fetchProducts = async () => {
-  const { data } = await axios.get('/api/products');
-  const { products } = data;
-  return products;
+export const fetchProducts = async (pageNumber = 1) => {
+  const { data } = await axios.get('/api/products', {
+    params: {
+      pageNumber,
+    },
+  });
+  return data;
 };
 
 export const uploadImage = async (image) => {
