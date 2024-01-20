@@ -10,6 +10,11 @@ export const fetchProducts = async (pageNumber = 1) => {
   return data;
 };
 
+export const fetchTopProducts = async () => {
+  const { data } = await axios.get('/api/products/top-products');
+  return data;
+};
+
 export const uploadImage = async (image) => {
   const storageRef = storage.ref();
   const imageRef = storageRef.child(`images/${image.name}`);

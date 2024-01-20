@@ -4,13 +4,19 @@ import Product from '../components/Product';
 import { json, useLoaderData, useParams } from 'react-router-dom';
 import { fetchProducts } from '../api/api';
 import Paginate from '../components/Paginate';
+import ProductCarousel from '../components/ProductCarousel';
 
 const HomePage = () => {
   const { products, pages } = useLoaderData();
   const { pageNumber } = useParams();
   return (
     <>
-      <h1>Latest Products</h1>
+      <h1 className='text-center my-2'>Latest Products</h1>
+      <Row className='mt-2'>
+        <Col>
+          <ProductCarousel />
+        </Col>
+      </Row>
       <Row>
         {products.map((product) => (
           <Col sm={12} md={6} lg={4} xl={3} key={product._id}>

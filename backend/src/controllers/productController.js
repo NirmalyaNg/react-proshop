@@ -143,3 +143,14 @@ export const deleteProduct = catchAsync(async (req, res, next) => {
     return next(new AppError('Product not found', 404));
   }
 });
+
+// @desc Fetch Top 3 best rated product
+// Route GET /api/products/top
+// Access public
+export const fetchTop3Products = catchAsync(async (req, res, next) => {
+  const products = await Product.find({}).sort('-rating').limit(3);
+  res.status(200).json({
+    status: 'success',
+    products,
+  });
+});
