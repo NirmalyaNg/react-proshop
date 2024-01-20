@@ -13,6 +13,12 @@ const reducer = (state, action) => {
         ...state,
         touched: true,
       };
+    case 'RESET':
+      return {
+        ...state,
+        value: action.payload,
+        touched: false,
+      };
     default:
       return state;
   }
@@ -36,6 +42,13 @@ const useInput = (initialValue, validate) => {
     });
   };
 
+  const reset = (resetValue = '') => {
+    stateDispatch({
+      type: 'RESET',
+      payload: resetValue,
+    });
+  };
+
   return {
     value: state.value,
     touched: state.touched,
@@ -43,6 +56,7 @@ const useInput = (initialValue, validate) => {
     inValid,
     handleChange,
     handleBlur,
+    reset,
   };
 };
 

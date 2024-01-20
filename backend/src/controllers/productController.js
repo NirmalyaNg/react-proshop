@@ -54,6 +54,45 @@ export const createProduct = catchAsync(async (req, res, next) => {
   });
 });
 
+// @desc Create Review for a product
+// @Route POST /api/products/:id/reviews
+// Access private
+export const createProductReview = catchAsync(async (req, res, next) => {
+  const { rating, comment } = req.body;
+  const product = await Product.findById(req.params.id);
+
+  if (product) {
+    const alreadyReviewed = product.reviews.find(
+      (review) => review.user.toString() === req.user._id.toString()
+    );
+    if (alreadyReviewed) {
+      return next(new AppError('Product already reviewed', 400));
+    }
+
+    const review = {
+      name: req.user.name,
+      user: req.user._id,
+      rating: Number(rating),
+      comment,
+    };
+
+    product.reviews.push(review);
+    product.numReviews += 1;
+    product.rating =
+      product.reviews.reduce((acc, curr) => acc + curr.rating, 0) / product.reviews.length;
+
+    const updatedProduct = await product.save();
+    res.status(201).json({
+      status: 'success',
+      review: updatedProduct.reviews.find(
+        (review) => review.user.toString() === req.user._id.toString()
+      ),
+    });
+  } else {
+    return next(new AppError('Product not found', 404));
+  }
+});
+
 // @desc Update Product
 // Route PUT /api/products/:id
 // Access private(admin)

@@ -1,6 +1,7 @@
 import { isEmail, isPostalCode } from 'validator';
 
-const isEmpty = (value) => `${value}`.trim().length === 0;
+const isEmpty = (value) =>
+  value === null || value === undefined || `${value}`.trim().length === 0;
 const hasMinLength = (value, minLength) => value.trim().length >= minLength;
 const isValidEmail = (value) => isEmail(value);
 const hasMinValue = (value, minValue) => +value > minValue;
@@ -135,6 +136,22 @@ export const validateProductPrice = (value) => {
     error = 'Product price cannot be empty';
   } else if (!hasMinValue(value, 0)) {
     error = 'Product price should be greater than 0';
+  }
+  return error;
+};
+
+export const validateRating = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Rating should not be empty';
+  }
+  return error;
+};
+
+export const validateComment = (value) => {
+  let error = null;
+  if (isEmpty(value)) {
+    error = 'Comment should not be empty';
   }
   return error;
 };
