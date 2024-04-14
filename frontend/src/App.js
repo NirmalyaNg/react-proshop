@@ -51,6 +51,11 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Navigate to='order-list' /> },
           { path: 'order-list', element: <OrderListPage />, loader: ordersLoader },
+          {
+            path: 'order-list/page/:pageNumber',
+            element: <OrderListPage />,
+            loader: ordersLoader,
+          },
           { path: 'product-list', element: <ProductListPage />, loader: productsLoader },
           {
             path: 'product-list/page/:pageNumber',

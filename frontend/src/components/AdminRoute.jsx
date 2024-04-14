@@ -18,6 +18,7 @@ export const loader = async () => {
     if (error?.response?.status === 401) {
       return redirect('/login');
     }
+    return redirect('/');
   }
 };
 

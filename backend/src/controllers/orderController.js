@@ -113,9 +113,17 @@ const updateOrderToDelivered = catchAsync(async (req, res, next) => {
 // @route GET /api/orders
 // @access Private(admin)
 const getAllOrders = catchAsync(async (req, res, next) => {
-  const orders = await Order.find({}).populate('user', '_id name');
-  res.status(200).send({
+  const pageNumber = req.query.pageNumber || 1;
+  const pageSize = process.env.PAGE_SIZE || 5;
+  const count = await Order.countDocuments({});
+  const orders = await Order.find({})
+    .limit(pageSize)
+    .skip(pageSize * (pageNumber - 1));
+
+  res.status(200).json({
     status: 'success',
+    page: pageNumber,
+    pages: Math.ceil(count / pageSize),
     orders,
   });
 });
