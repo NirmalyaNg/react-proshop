@@ -11,7 +11,7 @@ const Paginate = ({ pages, page, isAdmin = false, pageName }) => {
             <LinkContainer
               key={x + 1}
               to={!isAdmin ? `/page/${x + 1}` : `/admin/${pageName}/page/${x + 1}`}>
-              <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>
+              <Pagination.Item active={x + 1 === +page}>{x + 1}</Pagination.Item>
             </LinkContainer>
           ))}
         </Pagination>
