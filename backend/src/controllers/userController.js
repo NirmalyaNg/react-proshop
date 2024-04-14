@@ -125,13 +125,21 @@ const updateUserProfile = catchAsync(async (req, res, next) => {
 // @route GET /api/users
 // @access private(admin)
 const getUsers = catchAsync(async (req, res, next) => {
+  const pageNumber = req.query.pageNumber || 1;
+  const pageSize = process.env.PAGE_SIZE || 5;
+  const count = await User.countDocuments({});
   const users = await User.find({
     _id: {
       $ne: req.user._id,
     },
-  }).select('-password');
+  })
+    .select('-password')
+    .limit(pageSize)
+    .skip(pageSize * (pageNumber - 1));
   res.status(200).json({
     status: 'success',
+    page: pageNumber,
+    pages: Math.ceil(count / pageSize),
     users: users.filter((user) => user._id !== req.user._id),
   });
 });

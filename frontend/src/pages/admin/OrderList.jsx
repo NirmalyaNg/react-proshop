@@ -8,7 +8,7 @@ import Paginate from '../../components/Paginate';
 const OrderListPage = () => {
   const ordersData = useLoaderData();
   const { pageNumber } = useParams();
-  const [orders, setOrders] = useState(ordersData);
+  const [orders, setOrders] = useState(ordersData?.orders);
 
   const handleMarkAsDelivered = (updatedOrder) => {
     setOrders((prevOrders) => {
@@ -45,16 +45,21 @@ const OrderListPage = () => {
           ))}
         </tbody>
       </Table>
-      <Paginate page={pageNumber || 1} pages={ordersData.pages} isAdmin={true} />
+      <Paginate
+        page={pageNumber || 1}
+        pages={ordersData.pages}
+        isAdmin={true}
+        pageName='order-list'
+      />
     </>
   );
 };
 
-export const loader = async () => {
+export const loader = async ({ params }) => {
   try {
-    const { data } = await axios.get('/api/orders');
-    const { orders } = data;
-    return orders;
+    const { pageNumber } = params;
+    const { data } = await axios.get(`/api/orders?pageNumber=${pageNumber || 1}`);
+    return data;
   } catch (error) {
     throw json(
       {

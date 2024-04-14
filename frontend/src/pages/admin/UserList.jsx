@@ -5,10 +5,11 @@ import { FaCheck, FaEdit, FaTimes, FaTrash } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 import { json, useLoaderData } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Paginate from '../../components/Paginate';
 
 const UserListPage = () => {
   const usersData = useLoaderData();
-  const [users, setUsers] = useState(usersData);
+  const [users, setUsers] = useState(usersData.users);
   const handleDeleteUser = async (id) => {
     if (window.confirm('Are you sure you want to delete ?')) {
       try {
@@ -55,8 +56,7 @@ const UserListPage = () => {
                 <Button
                   className='ms-2 btn-sm'
                   variant='danger'
-                  onClick={() => handleDeleteUser(user._id)}
-                >
+                  onClick={() => handleDeleteUser(user._id)}>
                   <FaTrash style={{ color: 'white' }} />
                 </Button>
               </td>
@@ -64,15 +64,21 @@ const UserListPage = () => {
           ))}
         </tbody>
       </Table>
+      <Paginate
+        page={usersData?.page || 1}
+        pages={usersData?.pages}
+        isAdmin={true}
+        pageName='user-list'
+      />
     </>
   );
 };
 
-export const loader = async () => {
+export const loader = async ({ params }) => {
   try {
-    const { data } = await axios.get('/api/users');
-    const { users } = data;
-    return users;
+    const { pageNumber } = params;
+    const { data } = await axios.get(`/api/users?pageNumber=${pageNumber || 1}`);
+    return data;
   } catch (error) {
     throw json(
       {

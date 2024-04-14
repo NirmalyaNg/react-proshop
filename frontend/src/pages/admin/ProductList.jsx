@@ -81,8 +81,7 @@ const ProductListPage = () => {
                 <Button
                   variant='danger'
                   className='ms-2'
-                  onClick={() => deleteHandler(product._id)}
-                >
+                  onClick={() => deleteHandler(product._id)}>
                   <FaTrash style={{ color: 'white' }} />
                 </Button>
               </td>
@@ -90,7 +89,12 @@ const ProductListPage = () => {
           ))}
         </tbody>
       </Table>
-      <Paginate page={pageNumber || 1} pages={productsData.pages} isAdmin={true} />
+      <Paginate
+        page={pageNumber || 1}
+        pages={productsData.pages}
+        isAdmin={true}
+        pageName='product-list'
+      />
     </>
   );
 };

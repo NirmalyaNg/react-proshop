@@ -74,6 +74,11 @@ const router = createBrowserRouter([
             loader: usersLoader,
           },
           {
+            path: 'user-list/page/:pageNumber',
+            element: <UserListPage />,
+            loader: usersLoader,
+          },
+          {
             path: 'edit-user/:id',
             element: <UserEditPage />,
             loader: userLoader,
