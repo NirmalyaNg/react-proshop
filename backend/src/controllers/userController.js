@@ -139,7 +139,7 @@ const getUsers = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     page: pageNumber,
-    pages: Math.ceil(count / pageSize),
+    pages: Math.ceil((count - 1) / pageSize),
     users: users.filter((user) => user._id !== req.user._id),
   });
 });
