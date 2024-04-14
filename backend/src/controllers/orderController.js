@@ -119,7 +119,10 @@ const getAllOrders = catchAsync(async (req, res, next) => {
   const orders = await Order.find({})
     .limit(pageSize)
     .skip(pageSize * (pageNumber - 1));
-
+  // Populate 'user' field for each order
+  for (const order of orders) {
+    await order.populate('user', 'name');
+  }
   res.status(200).json({
     status: 'success',
     page: pageNumber,

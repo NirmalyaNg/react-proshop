@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { json, useLoaderData } from 'react-router-dom';
+import { json, useLoaderData, useParams } from 'react-router-dom';
 import OrderListItem from '../../components/OrderListItem';
 import { Table } from 'react-bootstrap';
+import Paginate from '../../components/Paginate';
 
 const OrderListPage = () => {
   const ordersData = useLoaderData();
+  const { pageNumber } = useParams();
   const [orders, setOrders] = useState(ordersData);
 
   const handleMarkAsDelivered = (updatedOrder) => {
@@ -43,6 +45,7 @@ const OrderListPage = () => {
           ))}
         </tbody>
       </Table>
+      <Paginate page={pageNumber || 1} pages={ordersData.pages} isAdmin={true} />
     </>
   );
 };
