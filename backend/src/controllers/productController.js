@@ -6,10 +6,26 @@ import AppError from '../utils/AppError.js';
 // Route GET /api/products
 // Access public
 export const fetchAllProducts = catchAsync(async (req, res, next) => {
+  let queryObj = {};
+  const { min, max } = req.query;
+  if (min) {
+    queryObj = {
+      price: {
+        $gte: +min,
+      },
+    };
+  }
+  if (max) {
+    queryObj = {
+      price: {
+        $lte: +max,
+      },
+    };
+  }
   const pageNumber = req.query.pageNumber || 1;
   const pageSize = process.env.PAGE_SIZE || 4;
-  const count = await Product.countDocuments({});
-  const products = await Product.find({})
+  const count = await Product.countDocuments(queryObj);
+  const products = await Product.find(queryObj)
     .limit(pageSize)
     .skip(pageSize * (pageNumber - 1));
 
