@@ -9,18 +9,16 @@ export const fetchAllProducts = catchAsync(async (req, res, next) => {
   let queryObj = {};
   const { min, max } = req.query;
   if (min) {
-    queryObj = {
-      price: {
-        $gte: +min,
-      },
-    };
+    queryObj.price = {};
+    queryObj.price['$gte'] = +min;
   }
   if (max) {
-    queryObj = {
-      price: {
-        $lte: +max,
-      },
-    };
+    if (queryObj.price) {
+      queryObj.price['$lte'] = +max;
+    } else {
+      queryObj.price = {};
+      queryObj.price['$lte'] = +max;
+    }
   }
   const pageNumber = req.query.pageNumber || 1;
   const pageSize = process.env.PAGE_SIZE || 4;

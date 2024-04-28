@@ -1,11 +1,14 @@
 import axios from 'axios';
 import { storage } from '../firebase';
 
-export const fetchProducts = async (pageNumber = 1) => {
+export const fetchProducts = async (pageNumber = 1, min = null, max = null) => {
+  const params = {
+    pageNumber,
+  };
+  min && (params.min = min);
+  max && (params.max = max);
   const { data } = await axios.get('/api/products', {
-    params: {
-      pageNumber,
-    },
+    params,
   });
   return data;
 };
