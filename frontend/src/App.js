@@ -20,6 +20,8 @@ import CreateProductPage from './pages/admin/CreateProduct';
 import ProductEditPage from './pages/admin/ProductEdit';
 import UserListPage, { loader as usersLoader } from './pages/admin/UserList';
 import UserEditPage, { loader as userLoader } from './pages/admin/UserEdit';
+import RegisterNew from './pages/RegisterNew';
+import LoginNew from './pages/LoginNew';
 
 const router = createBrowserRouter([
   {
@@ -32,7 +34,9 @@ const router = createBrowserRouter([
       { path: 'product/:id', element: <ProductDetailPage />, loader: productDetailLoader },
       { path: 'cart', element: <CartPage /> },
       { path: 'login', element: <LoginPage /> },
+      { path: 'login-new', element: <LoginNew /> },
       { path: 'register', element: <RegisterPage /> },
+      { path: 'register-new', element: <RegisterNew /> },
       {
         path: '',
         element: <PrivateRoute />,
