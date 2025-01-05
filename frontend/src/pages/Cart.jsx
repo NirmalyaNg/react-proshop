@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Form, FormControl, Image, ListGroup, Row } from 'react-bootstrap';
 import { FaTrash } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,6 +25,12 @@ const CartPage = () => {
     dispatch(removeFromCart(id));
   };
 
+  useEffect(() => {
+    setCheckboxState((prev) => {
+      return prev.filter((id) => cartItems.findIndex((item) => item._id === id) !== -1);
+    });
+  }, [cartItems]);
+
   const handleCheckboxStateChange = (e, id) => {
     let checkedStateCpy = [...checkboxState];
     if (id === 'all') {
@@ -32,7 +38,11 @@ const CartPage = () => {
         checkedStateCpy = [];
       } else {
         if (checkedStateCpy.length !== cartItems?.length) {
-          cartItems?.forEach((item) => checkedStateCpy.push(item._id));
+          cartItems?.forEach((item) => {
+            if (!checkedStateCpy.includes(item._id)) {
+              checkedStateCpy.push(item._id);
+            }
+          });
         }
       }
     } else if (checkedStateCpy.findIndex((item) => item === id) === -1) {
