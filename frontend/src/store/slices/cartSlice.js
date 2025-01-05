@@ -22,7 +22,12 @@ const cartSlice = createSlice({
       return updateCart(state);
     },
     removeFromCart: (state, action) => {
-      state.cartItems = state.cartItems.filter((item) => item._id !== action.payload);
+      if (action.payload instanceof Array) {
+        // Remove an item whose id is present in action.payload array of ids
+        state.cartItems = state.cartItems.filter((item) => !action.payload.includes(item._id));
+      } else {
+        state.cartItems = state.cartItems.filter((item) => item._id !== action.payload);
+      }
       return updateCart(state);
     },
     saveShippingAddress: (state, action) => {
